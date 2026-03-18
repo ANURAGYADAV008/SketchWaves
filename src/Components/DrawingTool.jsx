@@ -10,7 +10,7 @@ import {
   RectangleHorizontal,
   Triangle, Diamond, ArrowRight,
   Download,
-  ArrowRightToLine
+  ArrowRightToLine, MousePointerClick
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setColor, setPenTool, setToggle, setTool } from "../Utils/Tool";
@@ -30,6 +30,12 @@ const DrawingTool = () => {
         onClick={() => dispatch(setTool("line"))}
 
       />
+
+      <MousePointerClick size={20} className="mt-3 cursor-pointer"
+        onClick={() => dispatch(setTool("selection"))}
+
+      />
+
 
       <Shapes
         size={20}
@@ -75,8 +81,6 @@ const DrawingTool = () => {
       />
 
       <Eraser size={20} className="mt-3 cursor-pointer" />
-
-      <CircleDot size={20} className="mt-3 cursor-pointer" />
 
       <Undo size={20} className="mt-3 cursor-pointer"
         onClick={(e) => dispatch(setTool("undo"))}

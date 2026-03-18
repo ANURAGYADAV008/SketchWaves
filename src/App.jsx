@@ -1,34 +1,21 @@
-import Shapeicon from "./Components/Shapeicons"
 import Drawingapp from "./Components/Drawing"
-import DrawingTool from "./Components/DrawingTool"
-import { useSelector } from "react-redux"
-import { useEffect } from "react"
-import { connectionWithSocketServer } from "./socketConnection/socketconnection"
-import TextTool from "./Components/text"
+import Body from "./Components/Body"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Signin from "./Components/signin"
+import Canvas from "./Components/canvas"
 
 const App = () => {
-  const {toggle,penTool }= useSelector(store => store.canvasTools);
-
   return (
-    <div className="relative">
-      <Drawingapp />
-      <div className="absolute left-100 top-0 -mt-19">
-        <DrawingTool />
-      </div>
-
-      {
-        toggle && (
-          <div className="absolute left-2 top-20 ">
-            <Shapeicon />
-          </div>
-        )
-      }
-
-
+    <div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Body />}></Route>
+          <Route path="/canvas" element={<Canvas />}></Route>
+          <Route path="/signin" element={<Signin />}></Route>
+        </Routes>
+      </BrowserRouter>
     </div>
   )
 }
-
-
 
 export default App

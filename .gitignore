@@ -27,3 +27,4 @@ public
 # Environment variables
 ./backend/.env
 
+backend/.env
