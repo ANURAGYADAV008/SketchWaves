@@ -3,13 +3,16 @@ const authRouter = express.Router();
 const { User } = require("../models/user");
 const { validateSignup } = require("../utils/validation");
 const bcrypt = require("bcryptjs");
+const { userAuth } = require("../middlewares/userAuth")
 
 authRouter.post("/login", async (req, res) => {
     try {
         const { emailId, password } = req.body;
+        console.log("User data is", req.body);
         if (!emailId || !password) throw new Error("All fields are required");
 
-        const user = await User.findOne({ emailId: emailId });
+        const user = await User.findOne({ emailId: emailId.trim().toLowerCase() });
+
         if (!user) throw new Error("User Not found");
 
         const isPasswordValidate = await user.getValidatePassword(password);
@@ -64,6 +67,17 @@ authRouter.post("/signup", async (req, res) => {
         res.status(500).send({ message: error.message });
     }
 });
+
+authRouter.get("/getuser", userAuth, async (req, res) => {
+    try {
+        const user = req.user
+        res.status(200).json({ message: user });
+
+    }
+    catch (error) {
+        res.status(401).json({ message: error.message });
+    }
+})
 
 authRouter.post("/logout", async (req, res) => {
     try {

@@ -7,7 +7,7 @@ const boardSchema = new mongoose.Schema({
     admin: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        require: true
+        required: true
     },
     collaborators: [
         {

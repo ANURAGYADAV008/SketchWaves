@@ -10,7 +10,8 @@ import {
   RectangleHorizontal,
   Triangle, Diamond, ArrowRight,
   Download,
-  ArrowRightToLine, MousePointerClick
+  ArrowRightToLine, MousePointerClick,
+  Save
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setColor, setPenTool, setToggle, setTool } from "../Utils/Tool";
@@ -92,6 +93,7 @@ const DrawingTool = () => {
         onClick={() => dispatch(setTool('download'))}
 
       />
+
     </div>
   );
 };

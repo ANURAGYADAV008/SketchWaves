@@ -1,10 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Github, CircleUser } from "lucide-react";
 import Rightbar from "./rightsidemenu";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
     const [isRightbarOpen, setIsRightbarOpen] = useState(false);
     const wrapperRef = useRef(null);
+    const user = useSelector((store) => store.user.user);
+    const { firstName } = user || {};
+    const navigate = useNavigate();
+    console.log("Current User is", user);
 
     // Close on outside click
     useEffect(() => {
@@ -28,8 +34,8 @@ const Header = () => {
                 </h1>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-4">
+            {/* Right Actions */}
+            <div className="flex items-center gap-5">
 
                 {/* GitHub */}
                 <a
@@ -41,27 +47,44 @@ const Header = () => {
                     <Github size={22} />
                 </a>
 
-                {/* Sign In */}
-                <button className="px-5 py-2 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-95 transition-all shadow-sm">
-                    Sign In
-                </button>
+                {/* Auth Section */}
+                {!user ? (
+                    <button
+                        className="px-5 py-2 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-95 transition-all shadow-sm"
+                        onClick={() => navigate("/signup")}
+                    >
+                        Sign In
+                    </button>
+                ) : (
+                    <div className="flex items-center gap-3">
 
-                {/* Avatar + Dropdown */}
-                <div className="relative" ref={wrapperRef}>
-                    <CircleUser
-                        size={28}
-                        className="cursor-pointer text-gray-600 hover:text-blue-600 transition"
-                        onClick={() => setIsRightbarOpen((prev) => !prev)}
-                    />
+                        {/* Welcome Text */}
+                        <span className="text-gray-900  hidden md:block font-semibold">
+                            Welcome back,{" "}
+                            <span className="text-blue-700 font-semibold">
+                                {user.firstName || ""}
+                            </span>
+                        </span>
 
-                    {isRightbarOpen && (
-                        <div className="absolute right-0 top-10 z-50">
-                            <Rightbar />
+                        {/* Avatar */}
+                        <div className="relative" ref={wrapperRef}>
+                            <CircleUser
+                                size={30}
+                                className="cursor-pointer text-gray-600 hover:text-blue-600 transition"
+                                onClick={() => setIsRightbarOpen((prev) => !prev)}
+                            />
+
+                            {isRightbarOpen && (
+                                <div className="absolute right-0 top-12 z-50">
+                                    <Rightbar />
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
 
+                    </div>
+                )}
             </div>
+
         </header>
     );
 };

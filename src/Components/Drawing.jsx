@@ -5,9 +5,12 @@ import { useDispatch } from "react-redux";
 import { setColor, setPenTool, setToggle, setTool } from "../Utils/Tool";
 import getStroke from "perfect-freehand";
 import useCreateElement from '../hooks/useCreteElement';
-
+import { connectToServer } from '../Utils/serverConnection';
+import axios from 'axios';
 const Drawingapp = () => {
   const dispatch = useDispatch();
+
+
 
   const {
     tool,
@@ -27,15 +30,46 @@ const Drawingapp = () => {
     strokeLineDash
   );
 
-  const [elements, setElements] = useState([]);
+  const scene = useSelector((store) => store.user.scene) || [];
+
+  const [elements, setElements] = useState(scene);
   const [action, setAction] = useState("none");
   const [selectedElement, setSelectedElement] = useState(null);
 
+  useEffect(() => {
+    if (scene && scene.length > 0 && elements.length === 0) {
+      setElements(scene);
+    }
+  }, [scene]);
+
   const canvasRef = useRef(null);
+  const socketRef = useRef(null);
 
   // -----------------------------
-  // Convert mouse to canvas coords
+  // Convert mouse to canvas coord
   // -----------------------------
+
+  const handledbFunction = async () => {
+    try {
+      console.log("OKK")
+      const cleanElements = elements.map(({ path, ...rest }) => rest);
+
+      const res = await axios.put(
+        `http://localhost:5000/saveScene/69c965a84d927a74dc2f00bf`,
+        { elements: cleanElements },
+        {
+          withCredentials: true
+        }
+      );
+
+
+    }
+    catch (error) {
+      console.log(error)
+    }
+
+
+  }
   const getMousePos = (event) => {
     const rect = canvasRef.current.getBoundingClientRect();
     return {
@@ -105,6 +139,7 @@ const Drawingapp = () => {
     const id = elements.length;
     const newElement = createElement(x, y, x, y, id);
     setElements((prev) => [...prev, newElement]);
+
   };
 
   // -----------------------------
@@ -131,9 +166,13 @@ const Drawingapp = () => {
       const { x1, y1 } = element;
       const updated = createElement(x1, y1, x, y, index);
 
+
       const copy = [...elements];
       copy[index] = updated;
       setElements(copy);
+
+
+
     }
 
     else if (action === "moving" && selectedElement) {
@@ -187,6 +226,9 @@ const Drawingapp = () => {
   const finishDrawing = () => {
     setAction("none");
     setSelectedElement(null);
+    let x = elements.length
+    const newElement = elements[x - 1];
+    sendElement(newElement);
   };
 
   useEffect(() => {
@@ -207,22 +249,54 @@ const Drawingapp = () => {
       dispatch(setTool(null));
     }
 
+    if (tool === 'savetodb') {
+      handledbFunction();
+      dispatch(setTool('null'));
+    }
+
     if (tool === "selection") {
       setAction("selection");
     }
   }, [tool]);
 
-  // useEffect(() => {
-  //   connectionWithSocketServer();
+  useEffect(() => {
+    const webSocket = connectToServer();
+    socketRef.current = webSocket;
 
-  //   listenElementUpdate((element) => {
-  //     setElements((prev) => [...prev, element]);
-  //   });
+    webSocket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        const { userId, newElement } = data;
 
-  //   return () => {
-  //     removeElementListener();
-  //   };
-  // }, []);
+        console.log("Received:", newElement);
+
+        if (newElement) {
+          setElements((prev) => [...prev, newElement]);
+        }
+      } catch (err) {
+        console.error("Invalid message:", event.data);
+      }
+    };
+
+    webSocket.onopen = () => {
+      console.log("Connected");
+    };
+
+    webSocket.onclose = () => {
+      console.log("Closed !!");
+    };
+
+    return () => {
+      webSocket.close();
+    };
+  }, []);
+
+  const sendElement = (newElement) => {
+    const ws = socketRef.current;
+    const data = { userId: "1234", newElement: newElement };
+    ws.send(JSON.stringify(data));
+
+  }
 
   const getSvgPathFromStroke = stroke => {
     if (!stroke.length) return "";
@@ -252,6 +326,7 @@ const Drawingapp = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     elements.forEach((element) => {
+      console.log(element);
       if (element.type === "text") {
         ctx.font = "48px serif";
         ctx.fillText(element.text, element.x1, element.y1);
@@ -306,4 +381,6 @@ const Drawingapp = () => {
 };
 
 export default Drawingapp;
+
+
 
