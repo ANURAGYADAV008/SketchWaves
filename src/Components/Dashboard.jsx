@@ -1,123 +1,255 @@
-import { Search, Settings, Plus } from "lucide-react";
+import { Search, Settings, Plus, LayoutGrid, LayoutTemplate, Users, Trash2, FileEdit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Canvas from "./canvas";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../Utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { setScene } from "../Utils/user";
+import { setScene, setCurrboard } from "../Utils/user";
+import JoinBox from "./joinboard";
+import sketchwaveImage from "../images/sketchwaves (27).png";
+import dashboardImage from "../images/Screenshot (441).png"
 
 export default function Dashboard() {
-    const [boards, setBoards] = useState([])
-    const scene = useSelector((store) => store.user.scene)
-    const dispatch = useDispatch()
+    const [boards, setBoards] = useState([]);
+    const [openJoin, setOpenJoin] = useState(false);
+    const [activeNav, setActiveNav] = useState("shared");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const fetchBoards = async () => {
         try {
             const res = await axios.get(BASE_URL + "/getallBoards", { withCredentials: true });
             setBoards(res?.data?.boards);
         } catch (error) {
             console.log(error);
-
         }
-
-    }
+    };
 
     const getBoardData = async (id) => {
         try {
-            const res = await axios.get(`${BASE_URL}/getBoards/${id}`, {
-                withCredentials: true
-            });
+            const res = await axios.get(`${BASE_URL}/getBoards/${id}`, { withCredentials: true });
             const elements = res?.data?.scene?.elements;
+            const boardid = res?.data?.board?._id;
             dispatch(setScene(elements));
-            console.log(elements);
-
-            setTimeout(() => {
-                navigate("/canvas");
-            }, 4000)
-
+            dispatch(setCurrboard(boardid));
+            navigate("/canvas");
         } catch (error) {
             console.log(error);
-
         }
+    };
 
-    }
+    const handlecreateBoard = async () => {
+        try {
+            const res = await axios.post(BASE_URL + "/createBoard", {}, { withCredentials: true });
+            const boardid = res?.data?.id;
+            dispatch(setCurrboard(boardid));
+            dispatch(setScene(null));
+
+            navigate("/canvas");
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDeleteBoard = async (_id) => {
+        try {
+            await axios.delete(BASE_URL + "/deleteBoard" + `/${_id}`, { withCredentials: true });
+            window.location.reload();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const formatDate = (dateStr) => {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    };
 
     useEffect(() => {
-        fetchBoards()
+        fetchBoards();
+    }, []);
 
-    }, [])
-    const navigate = useNavigate();
+    const userName = boards[0]?.admin?.firstName || "User";
+    const initials = userName.slice(0, 2).toUpperCase();
+
     return (
-        <div className="flex h-screen bg-white text-gray-800">
+        <div className="flex h-screen bg-gray-50 text-gray-800 font-sans">
+
+            {/* Join Modal */}
+            {openJoin && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 backdrop-blur-sm">
+                    <div className="relative bg-white rounded-2xl shadow-xl p-6 min-w-[340px]">
+                        <JoinBox />
+                        <button
+                            onClick={() => setOpenJoin(false)}
+                            className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 text-sm"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Sidebar */}
-            <aside className="w-64 border-r border-gray-200 p-5">
-                <h2 className="text-xl font-semibold mb-6">Your boards</h2>
+            <aside className="w-56 shrink-0 bg-#F8FAFC  border-gray-950 flex flex-col py-5 px-3">
+                {/* Logo */}
+                <div className="flex items-center gap-2 px-3 mb-7">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                            <path d="M3 13 Q8 3 13 13" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                            <path d="M5 10 Q8 6 11 10" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+                        </svg>
+                    </div>
+                    <span className="font-semibold text-sm text-gray-800 tracking-tight">Sketchwave</span>
+                </div>
 
-                <nav className="space-y-4">
-                    <button className="flex items-center gap-2 text-blue-800 hover:text-green-700 font font-bold" onClick={() => navigate("/canvas")}>
-                        NewBoard
-                        <Plus size={25}></Plus>
+                {/* Nav */}
+                <nav className="flex flex-col gap-0.5 flex-1">
+                    {/* New Board */}
+                    <div
+                        className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 cursor-pointer group"
+                        onClick={handlecreateBoard}
+                    >
+                        <div className="flex items-center gap-2.5">
+                            <LayoutGrid size={15} className="text-gray-400" />
+                            <span className="text-sm text-gray-600 group-hover:text-gray-900">New board</span>
+                        </div>
+                        <button
+                            className="w-5 h-5 flex items-center justify-center rounded border border-gray-200 text-gray-400 hover:border-gray-400 hover:text-gray-600"
+                            onClick={(e) => { e.stopPropagation(); handlecreateBoard(); }}
+                        >
+                            <Plus size={11} />
+                        </button>
+                    </div>
+
+                    {/* Join Board */}
+                    <div
+                        className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 cursor-pointer group"
+                        onClick={() => setOpenJoin(true)}
+                    >
+                        <div className="flex items-center gap-2.5">
+                            <FileEdit size={15} className="text-gray-400" />
+                            <span className="text-sm text-gray-600 group-hover:text-gray-900">Join board</span>
+                        </div>
+                        <button className="w-5 h-5 flex items-center justify-center rounded border border-gray-200 text-gray-400 hover:border-gray-400 hover:text-gray-600">
+                            <Plus size={11} />
+                        </button>
+                    </div>
+
+                    {/* Shared with you */}
+                    <button
+                        className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-left w-full ${activeNav === "shared" ? "bg-gray-100 text-gray-900 font-medium" : "text-gray-600 hover:bg-gray-50"}`}
+                        onClick={() => setActiveNav("shared")}
+                    >
+                        <Users size={15} className={activeNav === "shared" ? "text-emerald-600" : "text-gray-400"} />
+                        <span className="text-sm">Shared with you</span>
                     </button>
 
-                    <div className="space-y-2 mt-6">
-                        <p className="font-medium text-blue-600">Dashboard</p>
-                        <p className="text-gray-600 hover:text-black cursor-pointer">Recents</p>
-                        <p className="text-gray-600 hover:text-black cursor-pointer">Shared with you</p>
-                        <p className="text-gray-600 hover:text-black cursor-pointer">Templates</p>
-                    </div>
+                    {/* Templates */}
+                    <button
+                        className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-left w-full ${activeNav === "templates" ? "bg-gray-100 text-gray-900 font-medium" : "text-gray-600 hover:bg-gray-50"}`}
+                        onClick={() => setActiveNav("templates")}
+                    >
+                        <LayoutTemplate size={15} className={activeNav === "templates" ? "text-emerald-600" : "text-gray-400"} />
+                        <span className="text-sm">Templates</span>
+                    </button>
                 </nav>
+
+                {/* Bottom user hint */}
+                <div className="px-3 pt-4 border-t border-gray-100 mt-2">
+                    <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center text-[10px] font-semibold text-emerald-700">
+                            {initials}
+                        </div>
+                        <span className="text-xs text-gray-500 truncate">{userName}</span>
+                    </div>
+                </div>
             </aside>
 
-            {/* Main Section */}
-            <main className="flex-1 flex flex-col">
+            {/* Main */}
+            <main className="flex-1 flex flex-col overflow-hidden">
 
-                {/* Header */}
-                <header className="flex justify-between items-center border-b border-gray-200 px-8 py-4">
-                    <h1 className="text-lg font-semibold">Dashboard</h1>
-
-                    <div className="flex items-center gap-6">
-                        <Search className="w-5 h-5 cursor-pointer" />
-                        <Settings className="w-5 h-5 cursor-pointer" />
-                        <div className="flex items-center gap-2">
-                            <img
-                                src="https://i.pravatar.cc/40"
-                                className="w-8 h-8 rounded-full"
-                            />
-                            <span className="text-2xl font-mono text-blue-700">{boards[0]?.admin?.firstName || " "}</span>
+                {/* Topbar */}
+                <header className="flex justify-between items-center bg-white border-b border-gray-100 px-7 py-3.5 shrink-0">
+                    <h1 className="text-base font-semibold text-gray-800">Dashboard</h1>
+                    <div className="flex items-center gap-3">
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50">
+                            <Search size={14} className="text-gray-500" />
+                        </button>
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50">
+                            <Settings size={14} className="text-gray-500" />
+                        </button>
+                        <div className="flex items-center gap-2 pl-2 border-l border-gray-100">
+                            <div className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center text-[11px] font-semibold text-emerald-700">
+                                {initials}
+                            </div>
+                            <span className="text-sm font-medium text-emerald-600">{userName}</span>
                         </div>
                     </div>
                 </header>
 
                 {/* Content */}
-                <div className="p-8">
+                <div className="flex-1 overflow-y-auto p-7">
 
-                    {/* Shared Section */}
-                    <h2 className="text-lg font-semibold mb-4">Shared with you</h2>
+                    {/* Section label */}
+                    <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-4">
+                        Shared with you
+                    </p>
 
-                    <div className="grid grid-cols-3 gap-6 mb-10">
+                    {/* Board grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+
                         {boards.map((item) => (
-                            <div key={item._id} className="w-64 border border-gray-200 rounded-lg overflow-hidden shadow-sm" onClick={() => getBoardData(item._id)}>
-                                <div className="h-32 bg-black"></div>
-
-                                <div className="p-4">
-                                    <p className="font-medium">{item.title}</p>
-                                    <p className="text-sm text-gray-500">
-                                        {"created: " + item.createdAt}
-                                    </p>
+                            <div
+                                key={item._id}
+                                className="group bg-white border shadow-gray-400 rounded-xl overflow-hidden hover:border-gray-300 hover:shadow-sm transition-all duration-150 "
+                            >
+                                {/* Thumbnail */}
+                                <div
+                                    className="h-32 bg-gray-50 flex items-center justify-center cursor-pointer relative overflow-hidden"
+                                    onClick={() => getBoardData(item._id)}
+                                >
+                                    {/* Placeholder canvas preview */}
+                                    <img src={dashboardImage}
+                                        className="w-fit mt-10"
+                                    >
+                                    </img>
+                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center">
+                                        <span className="opacity-0 group-hover:opacity-100 text-xs font-medium text-gray-600 bg-white/90 px-3 py-1 rounded-full border border-gray-200 transition-opacity">
+                                            Open
+                                        </span>
+                                    </div>
                                 </div>
 
-
+                                {/* Card footer */}
+                                <div className="px-3.5 py-3 flex items-center justify-between border-t border-gray-100">
+                                    <div className="min-w-0">
+                                        <p className="text-sm font-medium text-gray-800 truncate">{item.title || "Untitled Board"}</p>
+                                        <p className="text-[11px] text-gray-400 mt-0.5">{formatDate(item.createdAt)}</p>
+                                    </div>
+                                    <button
+                                        className="w-7 h-7 shrink-0 flex items-center justify-center rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors ml-2"
+                                        onClick={() => handleDeleteBoard(item._id)}
+                                    >
+                                        <Trash2 size={13} />
+                                    </button>
+                                </div>
                             </div>
                         ))}
+
+                        {/* New board card */}
+                        <div
+                            className="border border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center gap-2 h-[180px] cursor-pointer hover:border-emerald-400 hover:bg-emerald-50/40 transition-all group"
+                            onClick={() => handlecreateBoard()}
+                        >
+                            <div className="w-8 h-8 rounded-full border border-gray-300 group-hover:border-emerald-400 flex items-center justify-center text-gray-400 group-hover:text-emerald-600 transition-colors">
+                                <Plus size={16} />
+                            </div>
+                            <span className="text-xs text-gray-400 group-hover:text-emerald-600 transition-colors">New board</span>
+                        </div>
+
                     </div>
                 </div>
-
-                {/* Floating Button */}
-                <button className="fixed bottom-8 right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600" onClick={() => navigate("/canvas")}>
-                    <Plus size={20} />
-                </button>
-
             </main>
         </div>
     );

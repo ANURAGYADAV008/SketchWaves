@@ -6,6 +6,7 @@ import Canvas from "./Components/canvas"
 import Signup from "./Components/signup"
 import Dashboard from "./Components/Dashboard"
 
+
 const App = () => {
   return (
     <div>

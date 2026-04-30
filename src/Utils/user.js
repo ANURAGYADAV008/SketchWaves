@@ -4,7 +4,8 @@ const userSlice = createSlice({
     name: "user",
     initialState: {
         user: null,
-        scene: null
+        scene: null,
+        currboard: null,
     },
     reducers: {
         setUser: (state, action) => {
@@ -12,9 +13,12 @@ const userSlice = createSlice({
         },
         setScene: (state, action) => {
             state.scene = action.payload
+        },
+        setCurrboard: (state, action) => {
+            state.currboard = action.payload
         }
     }
 })
 
-export const { setUser, setScene } = userSlice.actions;
+export const { setUser, setScene, setCurrboard } = userSlice.actions;
 export default userSlice.reducer;

@@ -108,7 +108,8 @@ const useCreateElement = (
                 id: id,
                 x1,
                 y1,
-                text: 'Hello world',
+                text: '',
+                color,
             };
         }
 

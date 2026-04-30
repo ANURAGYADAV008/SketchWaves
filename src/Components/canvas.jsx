@@ -5,15 +5,23 @@ import DrawingTool from "./DrawingTool"
 import { useSelector } from "react-redux"
 import { useEffect } from "react"
 import TextTool from "./text"
+import ShareBtn from "./button"
 const Canvas = () => {
     const { toggle, penTool } = useSelector(store => store.canvasTools);
+
+
+
 
     return (
         <div className="relative">
             <Drawingapp />
+
             <div className="absolute left-100 top-0 -mt-19">
                 <DrawingTool />
+
+
             </div>
+
 
             {
                 toggle && (
@@ -26,4 +34,4 @@ const Canvas = () => {
     )
 
 }
-export default Canvas
+export default Canvas  

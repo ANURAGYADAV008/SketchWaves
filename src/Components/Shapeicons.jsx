@@ -1,4 +1,5 @@
 import { Diamond, ArrowRightFromLine, Star } from "lucide-react";
+import ShareBtn from "./button";
 import { useDispatch } from "react-redux";
 import {
   setTool,
@@ -14,6 +15,7 @@ import Thickness from "./Thickness";
 
 const Shapeicon = () => {
   const dispatch = useDispatch();
+  const roomId = crypto.randomUUID();
 
   return (
     <div className="bg-white p-3 space-y-3 border rounded-md">
@@ -73,22 +75,22 @@ const Shapeicon = () => {
         <div
           className="h-7 w-7 border rounded cursor-pointer hover:bg-gray-100 bg-black"
           onClick={() => dispatch(setFillStyle("solid"))}>
-            
-          </div>
-          
-      
+
+        </div>
+
+
         <div
           className="h-7 w-7 border rounded cursor-pointer hover:bg-gray-100"
           onClick={() => dispatch(setFillStyle("hachure"))}>
-            <p className="p-">////</p>
-          </div>
-        
+          <p className="p-">////</p>
+        </div>
+
         <div
           className="h-7 w-7 border rounded cursor-pointer hover:bg-gray-100"
           onClick={() => dispatch(setFillStyle("zigzag"))}
         >
-           <p className="ml-0.5">||||||
-           </p>
+          <p className="ml-0.5">||||||
+          </p>
         </div>
       </div>
 
@@ -99,8 +101,8 @@ const Shapeicon = () => {
           className="h-7 w-7 border rounded cursor-pointer hover:bg-gray-100"
           onClick={() => dispatch(setStrokeWidth(.5))}
         >
-            <p className="p-1  -mt-2 text-1xl">→</p>
-            <p className="p-1  -mt-7 text-1xl">→</p>
+          <p className="p-1  -mt-2 text-1xl">→</p>
+          <p className="p-1  -mt-7 text-1xl">→</p>
 
         </div>
         <div
@@ -138,14 +140,14 @@ const Shapeicon = () => {
           className="h-6 w-7 border rounded cursor-pointer hover:bg-gray-100"
           onClick={() => dispatch(setStrokeLineDash([10, 20]))}
         >
-    
+
           <p className="p-1  -mt-4  text-2xl">....</p>
         </div>
       </div>
 
       {/* Capacity / Thickness */}
-      <div className="text-sm font-medium">Capacity</div>
-      <Thickness />
+      <div className="text-sm font-medium">Collaborate</div>
+      <ShareBtn roomId={roomId} />
     </div>
   );
 };

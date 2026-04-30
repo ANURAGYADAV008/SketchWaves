@@ -14,7 +14,7 @@ const Rightbar = () => {
   const { firstName } = user
   const handleLogOut = async () => {
     try {
-      const res = await axios.post(BASE_URL + "/logout", { withCredentials: true });
+      const res = await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(setUser(null));
       navigate("/");
 

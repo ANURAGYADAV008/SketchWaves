@@ -7,6 +7,7 @@ const { boardData } = require("../models/boarddata");
 
 boardRouter.post("/createBoard", userAuth, async (req, res) => {
     try {
+        console.log("Yes Req Is Coming")
         const userId = req.user._id;
         const { title } = req.body || "Untitled Board";
         ///create new Board
