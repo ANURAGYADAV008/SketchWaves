@@ -2,41 +2,54 @@ const WebSocket = require("ws");
 
 const initializeServer = (httpServer) => {
     const wss = new WebSocket.Server({ server: httpServer });
-
-    let clients = new Set();
+    const rooms = new Map();
 
     wss.on("connection", (ws, req) => {
-        console.log("New Connection");
+        try {
+            // req.url can be like "/?boardId=abc123"
 
-        clients.add(ws);
+            const url = new URL(req.url, "http://localhost");
+            const boardId = url.searchParams.get("boardId");
 
-        ws.on("close", () => {
-            console.log("Closed");
-            clients.delete(ws);
-        });
+            console.log("WS connection attempt, boardId:", boardId);
 
-        ws.on("message", (message) => {
-            try {
-                const data = JSON.parse(message.toString());
-
-                const { userId, newElement } = data;
-
-                console.log("newElement:", newElement);
-
-                // broadcast to others
-                clients.forEach(client => {
-                    if (client !== ws && client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify({
-                            userId,
-                            newElement
-                        }));
-                    }
-                });
-
-            } catch (err) {
-                console.error("Invalid JSON:", message.toString());
+            if (!boardId || boardId === "null" || boardId === "undefined") {
+                console.log("No valid boardId, closing connection");
+                ws.close();
+                return;
             }
-        });
+
+            if (!rooms.has(boardId)) rooms.set(boardId, new Set());
+            const room = rooms.get(boardId);
+            room.add(ws);
+            console.log(`Client joined board: ${boardId} | peers: ${room.size}`);
+
+            ws.on("message", (raw) => {
+                let msg;
+                try { msg = JSON.parse(raw.toString()); } catch { return; }
+
+                for (const peer of room) {
+                    if (peer !== ws && peer.readyState === WebSocket.OPEN) {
+                        peer.send(JSON.stringify(msg));
+                    }
+                }
+            });
+
+            ws.on("close", () => {
+                room.delete(ws);
+                if (room.size === 0) rooms.delete(boardId);
+                console.log(`Client left board: ${boardId} | peers: ${room.size}`);
+            });
+
+            ws.on("error", (err) => {
+                console.log("WS error:", err.message);
+                ws.terminate();
+            });
+
+        } catch (err) {
+            console.log("WS connection error:", err.message);
+            ws.close();
+        }
     });
 };
 

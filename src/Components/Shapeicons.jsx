@@ -1,6 +1,6 @@
 import { Diamond, ArrowRightFromLine, Star } from "lucide-react";
 import ShareBtn from "./button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setTool,
   setColor,
@@ -16,6 +16,8 @@ import Thickness from "./Thickness";
 const Shapeicon = () => {
   const dispatch = useDispatch();
   const roomId = crypto.randomUUID();
+  const currboard = useSelector(store => store.user.currboard)
+
 
   return (
     <div className="bg-white p-3 space-y-3 border rounded-md">
@@ -147,7 +149,7 @@ const Shapeicon = () => {
 
       {/* Capacity / Thickness */}
       <div className="text-sm font-medium">Collaborate</div>
-      <ShareBtn roomId={roomId} />
+      <ShareBtn roomId={currboard} />
     </div>
   );
 };

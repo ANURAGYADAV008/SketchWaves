@@ -32,7 +32,7 @@ export default function Dashboard() {
             const boardid = res?.data?.board?._id;
             dispatch(setScene(elements));
             dispatch(setCurrboard(boardid));
-            navigate("/canvas");
+            navigate(`/canvas/${boardid}`);
         } catch (error) {
             console.log(error);
         }
@@ -41,11 +41,14 @@ export default function Dashboard() {
     const handlecreateBoard = async () => {
         try {
             const res = await axios.post(BASE_URL + "/createBoard", {}, { withCredentials: true });
-            const boardid = res?.data?.id;
+            console.log(res?.message)
+            const boardid = res?.data?.data?.id;
             dispatch(setCurrboard(boardid));
+            console.log("New Created Board", boardid)
+            if (!boardid) return;
             dispatch(setScene(null));
 
-            navigate("/canvas");
+            navigate(`/canvas/${boardid}`);
         } catch (error) {
             console.log(error);
         }

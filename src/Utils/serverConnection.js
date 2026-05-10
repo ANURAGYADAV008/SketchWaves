@@ -1,6 +1,7 @@
 
-const connectToServer = () => {
-    const websocket = new WebSocket("ws://localhost:5000?userId=1");
+const connectToServer = (boardId) => {
+
+    const websocket = new WebSocket(`ws://localhost:5000?boardId=${boardId}`);
     return websocket;
 }
 
