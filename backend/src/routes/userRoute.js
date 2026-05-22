@@ -20,12 +20,13 @@ authRouter.post("/login", async (req, res) => {
 
         if (isPasswordValidate) {
             const token = await user.getJWT();
-            res.cookie("token", token, {
-                httpOnly: true,
-                secure: false,
-                sameSite: 'lax',
-                expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)
-            });
+             res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
+            expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)
+        });
+            
         }
 
         res.status(200).send({ message: "User Login successfully", user: user });
