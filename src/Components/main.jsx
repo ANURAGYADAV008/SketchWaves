@@ -14,7 +14,7 @@ const Main = () => {
 
                         <h1 className="text-6xl font-extrabold leading-tight tracking-tight">
                             Whiteboard for{" "}
-                            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                                 SketchWave
                             </span>
                         </h1>
@@ -25,7 +25,7 @@ const Main = () => {
 
                         {/* Buttons */}
                         <div className="flex gap-4">
-                            <button className="px-7 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-medium shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                            <button className="px-7 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-full font-medium shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
                                 Try Now
                             </button>
 

@@ -1,6 +1,8 @@
 import Drawingapp from "./Components/Drawing"
 import Body from "./Components/Body"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
+import axios from "axios";
+axios.defaults.withCredentials = true;
 
 import Canvas from "./Components/canvas"
 import Signup from "./Components/signup"
