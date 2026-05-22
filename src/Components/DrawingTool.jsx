@@ -11,7 +11,7 @@ import {
   Triangle, Diamond, ArrowRight,
   Download,
   ArrowRightToLine, MousePointerClick,
-  Save
+  Save, Hand
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setColor, setPenTool, setToggle, setTool } from "../Utils/Tool";
@@ -74,15 +74,11 @@ const DrawingTool = () => {
         onClick={() => dispatch(setTool("polygon"))}
       />
 
-
-      <input
-        type="color"
-        onChange={(e) => dispatch(setColor(e.target.value))}
-        className="h-7 w-7 mt-2 border rounded-md cursor-pointer"
+      <Hand
+        size={20}
+        className="mt-3 cursor-pointer"
+        onClick={() => dispatch(setTool("panning"))}
       />
-
-      <Eraser size={20} className="mt-3 cursor-pointer" />
-
       <Undo size={20} className="mt-3 cursor-pointer"
         onClick={(e) => dispatch(setTool("undo"))}
 

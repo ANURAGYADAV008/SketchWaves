@@ -50,23 +50,23 @@ const Shapeicon = () => {
       <div className="text-sm font-medium">Background</div>
       <div className="flex gap-2">
         <div
-          className="h-7 w-7 bg-pink-100 border rounded cursor-pointer hover:ring-2"
+          className="h-7 w-7 bg-pink-300 border rounded cursor-pointer hover:ring-2"
           onClick={() => dispatch(setBackground("#fce7f3"))}
         />
         <div
-          className="h-7 w-7 bg-green-100 border rounded cursor-pointer hover:ring-2"
+          className="h-7 w-7 bg-green-300 border rounded cursor-pointer hover:ring-2"
           onClick={() => dispatch(setBackground("#dcfce7"))}
         />
         <div
-          className="h-7 w-7 bg-yellow-100 border rounded cursor-pointer hover:ring-2"
+          className="h-7 w-7 bg-yellow-300 border rounded cursor-pointer hover:ring-2"
           onClick={() => dispatch(setBackground("#fef9c3"))}
         />
         <div
-          className="h-7 w-7 bg-blue-100 border rounded cursor-pointer hover:ring-2"
+          className="h-7 w-7 bg-blue-300 border rounded cursor-pointer hover:ring-2"
           onClick={() => dispatch(setBackground("#dbeafe"))}
         />
         <div
-          className="h-7 w-7 bg-fuchsia-100 border rounded cursor-pointer hover:ring-2"
+          className="h-7 w-7 bg-fuchsia-300 border rounded cursor-pointer hover:ring-2"
           onClick={() => dispatch(setBackground("#fae8ff"))}
         />
       </div>
@@ -94,6 +94,7 @@ const Shapeicon = () => {
           <p className="ml-0.5">||||||
           </p>
         </div>
+
       </div>
 
       {/* Stroke Width */}

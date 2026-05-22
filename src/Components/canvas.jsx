@@ -16,9 +16,8 @@ const Canvas = () => {
         <div className="relative">
             <Drawingapp />
 
-            <div className="absolute left-100 top-0 -mt-19">
+            <div className="absolute left-125 top-0 -mt-19">
                 <DrawingTool />
-
 
             </div>
 

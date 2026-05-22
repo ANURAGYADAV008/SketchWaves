@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { use, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import rough from 'roughjs/bundled/rough.esm';
 import { useSelector } from 'react-redux';
 import { useDispatch } from "react-redux";
@@ -8,6 +8,39 @@ import getStroke from "perfect-freehand";
 import useCreateElement from '../hooks/useCreteElement';
 import { connectToServer } from '../Utils/serverConnection';
 import axios from 'axios';
+const usePressedKeys = () => {
+  const [pressedKeys, setPressedKeys] = useState(new Set());
+
+  useEffect(() => {
+    const handleKeyDown = event => {
+      if (event.repeat) return;
+
+      setPressedKeys(prevKeys => {
+        const updated = new Set(prevKeys);
+        updated.add(event.key.toLowerCase());
+        return updated;
+      });
+    };
+
+    const handleKeyUp = event => {
+      setPressedKeys(prevKeys => {
+        const updated = new Set(prevKeys);
+        updated.delete(event.key.toLowerCase());
+        return updated;
+      });
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  return pressedKeys;
+};
 
 const Drawingapp = () => {
   const dispatch = useDispatch();
@@ -35,10 +68,16 @@ const Drawingapp = () => {
   const [action, setAction] = useState("none");
   const [selectedElement, setSelectedElement] = useState(null);
   const [redoElements, setRedoElemets] = useState([]);
+  const [panoffset, setPanoffset] = useState({ x: 0, y: 0 });
+  const [startPanning, setStartPanning] = useState({ x: 0, y: 0 });
+  const [scale, setScale] = useState(1);
+  const [scaleoffset, setScaleoffset] = useState({x:0,y:0});
+  const pressedKeys = usePressedKeys()
 
-  // ── Text ref ─────────────────────────────────────────────────────────────────
+
+
   const textAreaRef = useRef(null);
-  // ─────────────────────────────────────────────────────────────────────────────
+
 
   useEffect(() => {
     if (scene && scene.length > 0 && elements.length === 0) {
@@ -70,6 +109,7 @@ const Drawingapp = () => {
 
     return () => clearTimeout(timer);
   }, [elements])
+
 
   useEffect(() => {
     if (!currboard) return;
@@ -115,8 +155,8 @@ const Drawingapp = () => {
   const getMousePos = (event) => {
     const rect = canvasRef.current.getBoundingClientRect();
     return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
+      x: (event.clientX - rect.left - panoffset.x*scale+scaleoffset.x)/scale,
+      y: (event.clientY - rect.top - panoffset.y*scale+scaleoffset.y)/scale
     };
   };
 
@@ -165,9 +205,38 @@ const Drawingapp = () => {
       }, 0);
     }
   }, [action, selectedElement]);
-  // ─────────────────────────────────────────────────────────────────────────────
 
-  // ── Commit text on blur (click away or Tab) ───────────────────────────────
+
+
+  useEffect(() => {
+    const panfunction = (event) => {
+      const isZooming =
+        pressedKeys.has("control") ||
+        pressedKeys.has("meta");
+
+      if (isZooming) {
+        event.preventDefault();
+
+        onZoom(event.deltaY * -0.01);
+        return;
+      }
+
+      if (tool !== "panning") return;
+
+      setPanoffset((prev) => ({
+        x: prev.x - event.deltaX,
+        y: prev.y - event.deltaY,
+      }));
+    };
+
+    document.addEventListener("wheel", panfunction, { passive: false });
+
+    return () => {
+      document.removeEventListener("wheel", panfunction);
+    };
+  }, [tool, pressedKeys]);
+
+
   const handleBlur = (event) => {
     if (!selectedElement) return;
     const { id, x1, y1 } = selectedElement;
@@ -209,13 +278,16 @@ const Drawingapp = () => {
     setAction("none");
     setSelectedElement(null);
   };
-  // ─────────────────────────────────────────────────────────────────────────────
 
-  // -----------------------------
-  // Mouse Down
-  // -----------------------------
+
   const startDrawing = (event) => {
     const { x, y } = getMousePos(event);
+
+    if (event.button === 1) {
+      setAction("panning");
+      setStartPanning({ x: x, y: y });
+      return;
+    }
 
     // While typing, ignore all canvas clicks
     if (action === "writing") return;
@@ -257,9 +329,7 @@ const Drawingapp = () => {
     setElements((prev) => [...prev, newElement]);
   };
 
-  // -----------------------------
-  // Mouse Move
-  // -----------------------------
+
   const draw = (event) => {
     if (action === "writing") return;
 
@@ -278,6 +348,18 @@ const Drawingapp = () => {
         copy[index] = updated;
         setElements(copy);
         return;
+      }
+
+      if (action === "panning") {
+        const deltax = clientX - startPanning.x;
+        const deltay = clientY - startPanning.y;
+        setPanoffset((prev) => ({
+          x: prev.x + deltax,
+          y: prev.y
+        }))
+
+        return;
+
       }
 
       const { x1, y1 } = element;
@@ -332,6 +414,9 @@ const Drawingapp = () => {
     }
   };
 
+
+
+
   // -----------------------------
   // Mouse Up
   // -----------------------------
@@ -352,6 +437,9 @@ const Drawingapp = () => {
       sendElement(stamped);
     }
   };
+
+
+
 
   useEffect(() => {
     if (tool === 'download') {
@@ -426,15 +514,28 @@ const Drawingapp = () => {
     const ctx = canvas.getContext("2d");
     const rc = rough.canvas(canvas);
 
+    const scaleWidth=canvas.width*scale
+    const scaleHeight=canvas.height*scale;
+    const scaleOffsetX=(scaleWidth-canvas.width)/2;
+    const scaleOffsetY=(scaleHeight-canvas.height)/2;
+    setScaleoffset({x:scaleOffsetX,y:scaleOffsetY});
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+    ctx.save()
+
+    ctx.translate(panoffset.x*scale-scaleOffsetX, panoffset.y*scale-scaleOffsetY)
+     ctx.scale(scale,scale);
 
     elements.forEach((element) => {
       // Skip the active text element — the textarea renders it live
       if (action === "writing" && selectedElement && element.id === selectedElement.id) return;
+      if (action === 'panning') return;
 
       if (element.type === "text") {
-        ctx.textBaseline = "top";       // ← critical: aligns with textarea top edge
-        ctx.font = "30px cursive";      // ← must match textarea font exactly
+        ctx.textBaseline = "top";
+        ctx.font = "20px/1.2 cursive";
         ctx.fillStyle = element.color || "black";
         ctx.fillText(element.text, element.x1, element.y1);
       }
@@ -461,16 +562,19 @@ const Drawingapp = () => {
         ctx.fillStyle = element.color;
         ctx.fill(new Path2D(stroke));
       }
-
+      else if (element.type === "panning") return;
       else {
         rc.draw(element.roughEle);
       }
     });
-  }, [elements, action, selectedElement]);
 
-  // -----------------------------
-  // Render
-  // -----------------------------
+    ctx.restore();
+  }, [elements, action, selectedElement, panoffset,scale]);
+
+  const onZoom = (delta) => {
+    setScale(prevState => Math.min(Math.max(prevState + delta,0.1),20));
+
+  }
   return (
     <div>
       {/* Textarea only appears while the user is actively typing */}
@@ -480,9 +584,9 @@ const Drawingapp = () => {
           onBlur={handleBlur}
           style={{
             position: "fixed",
-            top: selectedElement.y1,    // matches ctx.textBaseline = "top"
-            left: selectedElement.x1,
-            font: "30px cursive",       // must match ctx.font exactly
+            top: (selectedElement.y1)*scale + panoffset.y*scale-scaleoffset.y,
+            left: (selectedElement.x1)*scale + panoffset.x*scale-scaleoffset.x,
+            font: `${20*scale}px/1.2 cursive}`,       // must match ctx.font exactly
             margin: 0,
             padding: 0,
             border: 0,
@@ -493,16 +597,65 @@ const Drawingapp = () => {
             background: "transparent",
             color: color,
             zIndex: 10,
-            minWidth: "2px",
             lineHeight: 1,
+            height: "auto"
           }}
           rows={1}
         />
       )}
+      <div
+  style={{
+    position: "fixed",
+    bottom: 20,
+    left:"50%",
+    transform: "translateX(-50%)",
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    backdropFilter: "blur(10px)",
+     backdropFilter: "blur(10px)",
+    borderRadius: "18px",
+    zIndex: 20,
+  }}
+>
+  <div
+    className="flex items-center gap-2 px-2 py-2 rounded-2xl 
+    bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl"
+  >
+    <button
+      onClick={() => onZoom(-0.1)}
+      className="w-9 h-5 flex items-center justify-center 
+      rounded-xl bg-neutral-800 text-white text-1xl 
+      hover:bg-neutral-700 active:scale-95 transition-all"
+    >
+      -
+    </button>
+
+    <span
+      onClick={() => setScale(1)}
+      className="min-w-[70px] text-center  font-semibold 
+      cursor-pointer select-none"
+    >
+      {new Intl.NumberFormat("en-GB", {
+        style: "percent",
+      }).format(scale)}
+    </span>
+
+    <button
+      onClick={() => onZoom(0.1)}
+      className="w-8 h-5 flex items-center justify-center 
+      rounded-xl bg-neutral-800 text-white text-1xl 
+      hover:bg-neutral-700 active:scale-95 transition-all"
+    >
+      +
+    </button>
+  </div>
+</div>
       <canvas
         ref={canvasRef}
         id="canvas"
-        className="bg-white cursor-crosshair"
+        className={`bg-[#f8f8ef]
+      bg-[linear-gradient(rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.04)_1px,transparent_1px)]
+      bg-size-[30px_30px] ${tool === "panning" ? "cursor-grab" : "cursor-crosshair"}`}
+        style={{ backgroundPosition: `${panoffset.x}px ${panoffset.y}px` }}
         width={window.innerWidth}
         height={window.innerHeight}
         onMouseDown={startDrawing}
