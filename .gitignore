@@ -28,3 +28,7 @@ public
 ./backend/.env
 
 backend/.env
+
+backend/Dockerfile
+
+
