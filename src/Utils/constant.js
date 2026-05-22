@@ -1,1 +1,1 @@
-export const BASE_URL = location.hostname === "localhost" ? "http://localhost:5000" : "https://brilliant-wonder-production-63d3.up.railway.app/"
+export const BASE_URL = location.hostname === "localhost" ? "http://localhost:5000" : "https://brilliant-wonder-production-63d3.up.railway.app"
