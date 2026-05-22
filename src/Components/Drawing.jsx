@@ -8,6 +8,7 @@ import getStroke from "perfect-freehand";
 import useCreateElement from '../hooks/useCreteElement';
 import { connectToServer } from '../Utils/serverConnection';
 import axios from 'axios';
+import { BASE_URL } from '../Utils/constant';
 const usePressedKeys = () => {
   const [pressedKeys, setPressedKeys] = useState(new Set());
 
@@ -92,7 +93,7 @@ const Drawingapp = () => {
     try {
       const cleanElements = elements.map(({ path, ...rest }) => rest);
       const res = await axios.put(
-        `http://localhost:5000/saveScene/${currboard}`,
+        `${BASE_URL}/${currboard}`,
         { elements: cleanElements },
         { withCredentials: true }
       );

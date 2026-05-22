@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { setCurrboard } from "../Utils/user";
 import axios from "axios";
 import { setScene } from "../Utils/user";
+import { BASE_URL } from "../Utils/constant";
 export default function JoinBox() {
     const [input, setInput] = useState("");
     const navigate = useNavigate();
