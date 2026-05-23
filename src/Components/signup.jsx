@@ -29,6 +29,8 @@ const Signup = () => {
             console.log(res.data);
 
             dispatch(setUser(res.data.user));
+            localStorage.setItem("token", res.data.token); 
+            dispatch(setUser(res.data.user));
 
             navigate("/");
 

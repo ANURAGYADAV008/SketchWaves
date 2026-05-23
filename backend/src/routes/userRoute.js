@@ -18,18 +18,14 @@ authRouter.post("/login", async (req, res) => {
         const isPasswordValidate = await user.getValidatePassword(password);
         if (!isPasswordValidate) throw new Error("Invalid Email or Password");
 
-        if (isPasswordValidate) {
-            const token = await user.getJWT();
-             res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "None",
-            expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)
-        });
-            
+        if (!isPasswordValidate) {
+           throw new Error("somethig Went Wrong")
+    
         }
 
-        res.status(200).send({ message: "User Login successfully", user: user });
+        const token = await user.getJWT();
+
+        res.status(200).send({ message: "User Login successfully", user: user ,token:token});
 
     } catch (error) {
         res.status(500).send({ message: error.message });
@@ -56,13 +52,13 @@ authRouter.post("/signup", async (req, res) => {
 
         const savedUser = await user.save();
         const token = await savedUser.getJWT();
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "None",
-            expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)
-        });
-        res.status(200).send({ message: "User Signup successfully", user: savedUser });
+        // res.cookie("token", token, {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: "None",
+        //     expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)
+        // });
+        res.status(200).send({ message: "User Signup successfully", user: savedUser ,token:token});
 
     } catch (error) {
         res.status(500).send({ message: error.message });
@@ -82,13 +78,13 @@ authRouter.get("/getuser", userAuth, async (req, res) => {
 
 authRouter.post("/logout", async (req, res) => {
     try {
-        res.cookie("token", "", {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            path: "/",
-            expires: new Date(0)
-        });
+        // res.cookie("token", "", {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: "none",
+        //     path: "/",
+        //     expires: new Date(0)
+        // });
         res.status(200).send({ message: "User Logout successfully" });
 
     } catch (error) {

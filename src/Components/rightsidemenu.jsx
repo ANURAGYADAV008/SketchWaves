@@ -15,6 +15,7 @@ const Rightbar = () => {
   const handleLogOut = async () => {
     try {
       const res = await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      localStorage.removeItem("token");
       dispatch(setUser(null));
       navigate("/");
 
@@ -212,3 +213,4 @@ const Rightbar = () => {
 };
 
 export default Rightbar;
+
