@@ -27,7 +27,7 @@ export default function JoinBox() {
         if (!boardId) return;
 
         try {
-            const getBoardData = await axios.get(`${BASE_URL}/getBoards/${boardId}`, { withCredentials: true });
+            const res = await axios.get(`${BASE_URL}/getBoards/${boardId}`, { withCredentials: true });
             const elements = res?.data?.scene?.elements;
             dispatch(setScene(elements));
         } catch (error) {

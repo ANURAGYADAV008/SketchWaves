@@ -93,7 +93,7 @@ const Drawingapp = () => {
     try {
       const cleanElements = elements.map(({ path, ...rest }) => rest);
       const res = await axios.put(
-        `${BASE_URL}/${currboard}`,
+        `${BASE_URL}/savescene/${currboard}`,
         { elements: cleanElements },
         { withCredentials: true }
       );

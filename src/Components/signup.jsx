@@ -30,7 +30,6 @@ const Signup = () => {
 
             dispatch(setUser(res.data.user));
             localStorage.setItem("token", res.data.token); 
-            dispatch(setUser(res.data.user));
 
             navigate("/");
 
@@ -53,11 +52,8 @@ const Signup = () => {
                 },
                 { withCredentials: true }
             );
-
-            console.log(res.data);
-
+            localStorage.setItem("token", res.data.token);
             dispatch(setUser(res.data.user));
-
             navigate("/");
 
         } catch (error) {
