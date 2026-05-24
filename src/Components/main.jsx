@@ -1,6 +1,5 @@
 import sketchwaveImage from "../images/sketchwaves (27).png";
 import { Check } from 'lucide-react'
-
 const Main = () => {
     return (
         <div className="flex flex-col min-h-screen bg-gray-50 ">
