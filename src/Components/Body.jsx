@@ -23,7 +23,7 @@ const Body = () => {
             console.log(error.response?.data);
 
             if (error.response?.status === 401) {
-                navigate("/signup");
+                navigate("/");
             }
 
         }
