@@ -19,7 +19,6 @@ const App = () => {
           <Route path="/room/:boardId" element={<Canvas />} />
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/dashboard" element={<Dashboard />}></Route>
-          <Route path="*" element={<Body/>}></Route>
         </Routes>
       </BrowserRouter>
     </div>
