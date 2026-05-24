@@ -10,19 +10,21 @@ const Signup = () => {
     const [isSignup, setIsSignup] = useState(false);
     const [firstName, setFirstname] = useState("");
     const [lastName, setLastname] = useState("");
-    const [emailId, setEmailId] = useState("jaysinganurag321@gmail.com");
-    const [password, setPassword] = useState("Anurag123@#$");
+    const [emailId, setEmailId] = useState("");
+    const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     // SIGN IN
     const handleSignIn = async () => {
+
+        console.log("email",emailId,"password",password)
         try {
 
             const res = await axios.post(
                 BASE_URL + "/login",
-                { "emailId": emailId, "password": password },
+                { "emailId": emailId.trim().toLowerCase(), "password": password.trim()},
                 { withCredentials: true }
             );
 
@@ -105,14 +107,14 @@ const Signup = () => {
                 />
 
                 <input
-                    type="password"
+                    type="text"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full border rounded-lg px-4 py-3 mb-6 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 />
 
-                <button
+                <button type="button"
                     onClick={() => isSignup ? handleSignUp() : handleSignIn()}
                     className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-3 rounded-lg text-lg transition"
                 >
