@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Github, CircleUser } from "lucide-react";
+import { Github, CircleUser ,Layers} from "lucide-react";
 import Rightbar from "./rightsidemenu";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -24,18 +24,19 @@ const Header = () => {
     }, []);
 
     return (
-        <header className="w-full px-6 py-3 flex items-center justify-between bg-white/70 backdrop-blur-md shadow-sm border-none border fixed h-20">
+        <header className="w-full px-6 py-3 flex items-center justify-between backdrop-blur-md shadow-sm border-none border  h-20 sticky top-0 left-0 right-0 bg-black">
 
             {/* Logo */}
             <div className="flex items-center gap-2">
+                <Layers size={28} color="blue"/>
                 <span className="text-3xl"></span>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-                    Sketch<span className="text-blue-600">Wave</span>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
+                    Sketch <span className="text-blue-600">Wave</span>
                 </h1>
             </div>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-5 text-white">
 
                 {/* GitHub */}
                 <a
