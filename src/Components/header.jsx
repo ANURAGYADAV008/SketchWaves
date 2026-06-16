@@ -24,7 +24,7 @@ const Header = () => {
     }, []);
 
     return (
-        <header className="w-full px-6 py-3 flex items-center justify-between backdrop-blur-md shadow-sm border-none border  h-20 sticky top-0 left-0 right-0 bg-black">
+        <header className="w-full px-6 py-3 flex items-center justify-between backdrop-blur-md shadow-sm border-none border  h-20 sticky top-0 left-0 right-0 bg-[#0B1120] text-white">
 
             {/* Logo */}
             <div className="flex items-center gap-2">

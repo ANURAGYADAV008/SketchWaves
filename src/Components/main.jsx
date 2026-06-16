@@ -4,7 +4,7 @@ import { Check, Globe2, MousePointer2, Zap } from 'lucide-react'
 
 const Main = () => {
     return (
-        <div className="flex flex-col min-h-screen bg-black top-10">
+        <div className="flex flex-col min-h-screen bg-[#0B1120] top-10">
 
             {/* HERO SECTION */}
             <main className="flex-1 -mt-30">
