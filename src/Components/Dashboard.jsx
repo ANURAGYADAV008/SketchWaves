@@ -41,10 +41,10 @@ export default function Dashboard() {
     const handlecreateBoard = async () => {
         try {
             const res = await axios.post(BASE_URL + "/createBoard", {}, { withCredentials: true });
-            console.log(res?.message)
+            //console.log(res?.message)
             const boardid = res?.data?.data?.id;
             dispatch(setCurrboard(boardid));
-            console.log("New Created Board", boardid)
+            // console.log("New Created Board", boardid)
             if (!boardid) return;
             dispatch(setScene(null));
 

@@ -7,11 +7,11 @@ const { boardData } = require("../models/boarddata");
 
 boardRouter.post("/createBoard", userAuth, async (req, res) => {
     try {
-       
+
         const userId = req.user._id;
         const { title } = req.body || "Untitled Board";
         ///create new Board
-        console.log(userId);
+        //console.log(userId);
         const board = await new Board({
             title: title,
             admin: userId
@@ -49,7 +49,7 @@ boardRouter.post("/createBoard", userAuth, async (req, res) => {
 boardRouter.get("/getallBoards", userAuth, async (req, res) => {
     try {
         const user_Id = req.user._id;
-        console.log(user_Id);
+        //console.log(user_Id);
         const boards = await Board.find({
             $or: [
                 { admin: user_Id },
@@ -111,7 +111,7 @@ boardRouter.get("/getBoards/:id", userAuth, async (req, res) => {
 });
 
 boardRouter.put("/saveScene/:id", async (req, res) => {
-    console.log("OKKKK")
+    //console.log("OKKKK")
 
 
     try {

@@ -72,7 +72,7 @@ const Drawingapp = () => {
   const [panoffset, setPanoffset] = useState({ x: 0, y: 0 });
   const [startPanning, setStartPanning] = useState({ x: 0, y: 0 });
   const [scale, setScale] = useState(1);
-  const [scaleoffset, setScaleoffset] = useState({x:0,y:0});
+  const [scaleoffset, setScaleoffset] = useState({ x: 0, y: 0 });
   const pressedKeys = usePressedKeys()
 
 
@@ -114,7 +114,7 @@ const Drawingapp = () => {
 
   useEffect(() => {
     if (!currboard) return;
-    console.log("EFFECT RUN", currboard);
+    //console.log("EFFECT RUN", currboard);
 
 
     const webSocket = connectToServer(currboard); // <-- pass boardId
@@ -156,8 +156,8 @@ const Drawingapp = () => {
   const getMousePos = (event) => {
     const rect = canvasRef.current.getBoundingClientRect();
     return {
-      x: (event.clientX - rect.left - panoffset.x*scale+scaleoffset.x)/scale,
-      y: (event.clientY - rect.top - panoffset.y*scale+scaleoffset.y)/scale
+      x: (event.clientX - rect.left - panoffset.x * scale + scaleoffset.x) / scale,
+      y: (event.clientY - rect.top - panoffset.y * scale + scaleoffset.y) / scale
     };
   };
 
@@ -515,19 +515,19 @@ const Drawingapp = () => {
     const ctx = canvas.getContext("2d");
     const rc = rough.canvas(canvas);
 
-    const scaleWidth=canvas.width*scale
-    const scaleHeight=canvas.height*scale;
-    const scaleOffsetX=(scaleWidth-canvas.width)/2;
-    const scaleOffsetY=(scaleHeight-canvas.height)/2;
-    setScaleoffset({x:scaleOffsetX,y:scaleOffsetY});
+    const scaleWidth = canvas.width * scale
+    const scaleHeight = canvas.height * scale;
+    const scaleOffsetX = (scaleWidth - canvas.width) / 2;
+    const scaleOffsetY = (scaleHeight - canvas.height) / 2;
+    setScaleoffset({ x: scaleOffsetX, y: scaleOffsetY });
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 
     ctx.save()
 
-    ctx.translate(panoffset.x*scale-scaleOffsetX, panoffset.y*scale-scaleOffsetY)
-     ctx.scale(scale,scale);
+    ctx.translate(panoffset.x * scale - scaleOffsetX, panoffset.y * scale - scaleOffsetY)
+    ctx.scale(scale, scale);
 
     elements.forEach((element) => {
       // Skip the active text element — the textarea renders it live
@@ -570,10 +570,10 @@ const Drawingapp = () => {
     });
 
     ctx.restore();
-  }, [elements, action, selectedElement, panoffset,scale]);
+  }, [elements, action, selectedElement, panoffset, scale]);
 
   const onZoom = (delta) => {
-    setScale(prevState => Math.min(Math.max(prevState + delta,0.1),20));
+    setScale(prevState => Math.min(Math.max(prevState + delta, 0.1), 20));
 
   }
   return (
@@ -585,9 +585,9 @@ const Drawingapp = () => {
           onBlur={handleBlur}
           style={{
             position: "fixed",
-            top: (selectedElement.y1)*scale + panoffset.y*scale-scaleoffset.y,
-            left: (selectedElement.x1)*scale + panoffset.x*scale-scaleoffset.x,
-            font: `${20*scale}px/1.2 cursive}`,       // must match ctx.font exactly
+            top: (selectedElement.y1) * scale + panoffset.y * scale - scaleoffset.y,
+            left: (selectedElement.x1) * scale + panoffset.x * scale - scaleoffset.x,
+            font: `${20 * scale}px/1.2 cursive}`,       // must match ctx.font exactly
             margin: 0,
             padding: 0,
             border: 0,
@@ -605,51 +605,51 @@ const Drawingapp = () => {
         />
       )}
       <div
-  style={{
-    position: "fixed",
-    bottom: 20,
-    left:"50%",
-    transform: "translateX(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
-    backdropFilter: "blur(10px)",
-     backdropFilter: "blur(10px)",
-    borderRadius: "18px",
-    zIndex: 20,
-  }}
->
-  <div
-    className="flex items-center gap-2 px-2 py-2 rounded-2xl 
+        style={{
+          position: "fixed",
+          bottom: 20,
+          left: "50%",
+          transform: "translateX(-50%)",
+          backgroundColor: "rgba(0, 0, 0, 0.1)",
+          backdropFilter: "blur(10px)",
+          backdropFilter: "blur(10px)",
+          borderRadius: "18px",
+          zIndex: 20,
+        }}
+      >
+        <div
+          className="flex items-center gap-2 px-2 py-2 rounded-2xl 
     bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl"
-  >
-    <button
-      onClick={() => onZoom(-0.1)}
-      className="w-9 h-5 flex items-center justify-center 
+        >
+          <button
+            onClick={() => onZoom(-0.1)}
+            className="w-9 h-5 flex items-center justify-center 
       rounded-xl bg-neutral-800 text-white text-1xl 
       hover:bg-neutral-700 active:scale-95 transition-all"
-    >
-      -
-    </button>
+          >
+            -
+          </button>
 
-    <span
-      onClick={() => setScale(1)}
-      className="min-w-[70px] text-center  font-semibold 
+          <span
+            onClick={() => setScale(1)}
+            className="min-w-[70px] text-center  font-semibold 
       cursor-pointer select-none"
-    >
-      {new Intl.NumberFormat("en-GB", {
-        style: "percent",
-      }).format(scale)}
-    </span>
+          >
+            {new Intl.NumberFormat("en-GB", {
+              style: "percent",
+            }).format(scale)}
+          </span>
 
-    <button
-      onClick={() => onZoom(0.1)}
-      className="w-8 h-5 flex items-center justify-center 
+          <button
+            onClick={() => onZoom(0.1)}
+            className="w-8 h-5 flex items-center justify-center 
       rounded-xl bg-neutral-800 text-white text-1xl 
       hover:bg-neutral-700 active:scale-95 transition-all"
-    >
-      +
-    </button>
-  </div>
-</div>
+          >
+            +
+          </button>
+        </div>
+      </div>
       <canvas
         ref={canvasRef}
         id="canvas"

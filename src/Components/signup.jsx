@@ -19,19 +19,19 @@ const Signup = () => {
     // SIGN IN
     const handleSignIn = async () => {
 
-        console.log("email",emailId,"password",password)
+        //console.log("email",emailId,"password",password)
         try {
 
             const res = await axios.post(
                 BASE_URL + "/login",
-                { "emailId": emailId.trim().toLowerCase(), "password": password.trim()},
+                { "emailId": emailId.trim().toLowerCase(), "password": password.trim() },
                 { withCredentials: true }
             );
 
-            console.log(res.data);
+            //console.log(res.data);
 
             dispatch(setUser(res.data.user));
-            localStorage.setItem("token", res.data.token); 
+            localStorage.setItem("token", res.data.token);
 
             navigate("/");
 
@@ -59,7 +59,7 @@ const Signup = () => {
             navigate("/");
 
         } catch (error) {
-            console.log(error.response?.data || error.message);
+            //console.log(error.response?.data || error.message);
         }
     };
 

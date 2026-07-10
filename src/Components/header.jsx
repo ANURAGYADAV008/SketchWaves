@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Github, CircleUser ,Layers} from "lucide-react";
+import { Github, CircleUser, Layers } from "lucide-react";
 import Rightbar from "./rightsidemenu";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ const Header = () => {
     const user = useSelector((store) => store.user.user);
     const { firstName } = user || {};
     const navigate = useNavigate();
-    console.log("Current User is", user);
+    //console.log("Current User is", user);
 
     // Close on outside click
     useEffect(() => {
@@ -28,7 +28,7 @@ const Header = () => {
 
             {/* Logo */}
             <div className="flex items-center gap-2">
-                <Layers size={28} color="blue"/>
+                <Layers size={28} color="blue" />
                 <span className="text-3xl"></span>
                 <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
                     Sketch <span className="text-blue-600">Wave</span>

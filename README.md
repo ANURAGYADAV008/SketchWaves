@@ -1,16 +1,91 @@
-# React + Vite
+# 🌊 SketchWaves
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SketchWaves is a modern, real-time collaborative drawing application built with the MERN stack (MongoDB, Express, React, Node.js) and Socket.io. It leverages Rough.js and Perfect-Freehand to provide an intuitive and natural sketching experience.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Real-Time Collaboration**: Draw together with other users in real-time, powered by Socket.io.
+- **Natural Drawing Feel**: Smooth strokes and a hand-drawn aesthetic using Perfect-Freehand and Rough.js.
+- **Drawing Tools**: A variety of tools including freehand drawing, lines, and shapes.
+- **User Authentication**: Secure signup and login using JWT and bcrypt.
+- **Interactive UI**: Responsive and modern UI crafted with Tailwind CSS and Lucide React icons.
+- **State Management**: Predictable state container with Redux Toolkit for seamless app state handling.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Frontend:**
+- [React](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Rough.js](https://roughjs.com/)
+- [Perfect-Freehand](https://github.com/steveruizok/perfect-freehand)
+- [Socket.io-client](https://socket.io/)
+- [React Router DOM](https://reactrouter.com/)
 
-## Expanding the ESLint configuration
+**Backend:**
+- [Node.js](https://nodejs.org/) & [Express](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/) with Mongoose
+- [Socket.io](https://socket.io/)
+- [JWT (JSON Web Tokens)](https://jwt.io/) & [Bcryptjs](https://www.npmjs.com/package/bcryptjs)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🚀 Getting Started
+
+Follow these instructions to get the project up and running on your local machine.
+
+### Prerequisites
+
+- Node.js (v18 or higher recommended)
+- MongoDB (Running locally or a MongoDB Atlas URI)
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/ANURAGYADAV008/SketchWaves.git
+cd SketchWaves
+```
+
+### 2. Backend Setup
+
+Open a terminal and set up the Node.js backend:
+
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file in the `backend` directory and add the following variables:
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+```
+
+Start the backend development server:
+```bash
+npm start
+```
+
+### 3. Frontend Setup
+
+Open a new terminal session in the root folder (`SketchWaves`) and set up the React frontend:
+
+```bash
+npm install
+```
+
+Start the Vite development server:
+```bash
+npm run dev
+```
+
+### 4. Open the App
+The frontend will start on your local Vite server (usually `http://localhost:5173`). Open this URL in your browser to start sketching!
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page if you want to contribute.
+
+## 📜 License
+
+This project is licensed under the ISC License.

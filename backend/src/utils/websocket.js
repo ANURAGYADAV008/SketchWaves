@@ -11,10 +11,10 @@ const initializeServer = (httpServer) => {
             const url = new URL(req.url, "http://localhost");
             const boardId = url.searchParams.get("boardId");
 
-            console.log("WS connection attempt, boardId:", boardId);
+            //console.log("WS connection attempt, boardId:", boardId);
 
             if (!boardId || boardId === "null" || boardId === "undefined") {
-                console.log("No valid boardId, closing connection");
+                //console.log("No valid boardId, closing connection");
                 ws.close();
                 return;
             }
@@ -22,7 +22,7 @@ const initializeServer = (httpServer) => {
             if (!rooms.has(boardId)) rooms.set(boardId, new Set());
             const room = rooms.get(boardId);
             room.add(ws);
-            console.log(`Client joined board: ${boardId} | peers: ${room.size}`);
+            //console.log(`Client joined board: ${boardId} | peers: ${room.size}`);
 
             ws.on("message", (raw) => {
                 let msg;
@@ -38,11 +38,11 @@ const initializeServer = (httpServer) => {
             ws.on("close", () => {
                 room.delete(ws);
                 if (room.size === 0) rooms.delete(boardId);
-                console.log(`Client left board: ${boardId} | peers: ${room.size}`);
+                //console.log(`Client left board: ${boardId} | peers: ${room.size}`);
             });
 
             ws.on("error", (err) => {
-                console.log("WS error:", err.message);
+                //console.log("WS error:", err.message);
                 ws.terminate();
             });
 

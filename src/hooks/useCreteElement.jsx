@@ -6,19 +6,19 @@ const gen = rough.generator();
 /**
  * Custom Hook: useCreateElement
  *
- * Encapsulates all the logic for building a drawable element
+ *
  * (line, rectangle, circle, polygon, triangle, text, pen)
  * based on the currently selected tool and its style options.
  *
- * @param {string}   tool           - Active drawing tool (e.g. "line", "rectangle")
- * @param {string}   color          - Stroke color
- * @param {string}   background     - Fill/background color
- * @param {string}   fillStyle      - Rough.js fill style (e.g. "solid", "hachure")
- * @param {number}   strokeWidth    - Width of the stroke
- * @param {number[]} strokeLineDash - Dash pattern array (e.g. [] for solid, [8,4] for dashed)
+ * @param {string}   tool          
+ * @param {string}   color          
+ * @param {string}   background     
+ * @param {string}   fillStyle     
+ * @param {number}   strokeWidth    
+ * @param {number[]} strokeLineDash 
  *
  * @returns {{ createElement: Function }}
- *   createElement(x1, y1, x2, y2,,id) → element object ready to be stored in state
+ *   
  */
 const useCreateElement = (
     tool,
@@ -32,12 +32,12 @@ const useCreateElement = (
     /**
      * Creates a single drawable element based on the current tool.
      *
-     * @param {number} x1 - Start X coordinate
-     * @param {number} y1 - Start Y coordinate
-     * @param {number} x2 - End X coordinate (current mouse position)
-     * @param {number} y2 - End Y coordinate (current mouse position)
+     * @param {number} x1 
+     * @param {number} y1  
+     * @param {number} x2 
+     * @param {number} y2 
      * @param{number}id-Index of new element
-     * @returns {object} - Element object (roughjs element, pen element, or text element)
+     * @returns {object} - 
      */
     const createElement = (x1, y1, x2, y2, id, toolOverride) => {
         // When moving, we pass the element's own type as toolOverride
