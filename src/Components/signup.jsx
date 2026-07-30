@@ -22,6 +22,7 @@ const Signup = () => {
         //console.log("email",emailId,"password",password)
         try {
 
+
             const res = await axios.post(
                 BASE_URL + "/login",
                 { "emailId": emailId.trim().toLowerCase(), "password": password.trim() },

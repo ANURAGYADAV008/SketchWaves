@@ -22,7 +22,7 @@ const initializeServer = (httpServer) => {
             if (!rooms.has(boardId)) rooms.set(boardId, new Set());
             const room = rooms.get(boardId);
             room.add(ws);
-            //console.log(`Client joined board: ${boardId} | peers: ${room.size}`);
+            console.log(`Client joined board: ${boardId} | peers: ${room.size}`);
 
             ws.on("message", (raw) => {
                 let msg;
